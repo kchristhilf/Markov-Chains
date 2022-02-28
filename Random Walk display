@@ -1,0 +1,110 @@
+#Random Walk
+
+import os
+os.chdir('C:\\Users\\kcfai\\Documents\\2022\\ASU 1 Complete')
+
+import csv
+import matplotlib as mpl
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.collections import PatchCollection
+import math
+fig, ax1 = plt.subplots()
+
+with open('ASU 1 Low Pre-Text Comprehension.csv', 'r') as csvinput:
+    next(csvinput)
+    prev_xcoor = 0
+    prev_ycoor = 0
+    new_x = 0
+    new_y = 0
+    prev_id = 'k'
+    participants = 0
+    finals = []
+    for row in csv.reader(csvinput):
+        user_id = row[2] # when data file has user id in third column
+        combo = int(row[9]) #when data file has strategy use in tenth column
+        
+        if user_id == prev_id: 
+            if combo == 0:
+                new_x = 0
+                new_y = -1
+            if combo == 1:
+                new_x = -1
+                new_y = 0
+            if combo == 2:
+                new_x = 1
+                new_y = 0
+            if combo == 3:
+                new_x = 0
+                new_y = 0
+            if combo == 4:
+                new_x = 0
+                new_y = 1
+            if combo == 5:
+                new_x = 0
+                new_y = 1
+            if combo == 6:
+                new_x = 0
+                new_y = 1
+            if combo == 7:
+                new_x = 0
+                new_y = 1
+                
+            prev_xcoor = prev_xcoor + new_x
+            prev_ycoor = prev_ycoor + new_y
+            prev_id = user_id
+        else:
+            if prev_xcoor + new_x != 0:
+                plt.plot(prev_xcoor, prev_ycoor, 'yo', alpha = .3)
+            prev_xcoor = 0
+            prev_ycoor = 0
+            if combo == 0:
+                new_x = 0
+                new_y = -1
+            if combo == 1:
+                new_x = -1
+                new_y = 0
+            if combo == 2:
+                new_x = 1
+                new_y = 0
+            if combo == 3:
+                new_x = 0
+                new_y = 0
+            if combo == 4:
+                new_x = 0
+                new_y = 1
+            if combo == 5:
+                new_x = 0
+                new_y = 1
+            if combo == 6:
+                new_x = 0
+                new_y = 1
+            if combo == 7:
+                new_x = 0
+                new_y = 1
+            prev_xcoor = prev_xcoor + new_x
+            prev_ycoor = prev_ycoor + new_y
+            prev_id = user_id
+
+plt.xlim(-17, 17) #x-axis
+plt.ylim(-17, 17)
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+ax1.set_xlabel("None")
+ax1.xaxis.tick_bottom()
+plt.ylabel("Paraphrase")
+plt.title('Random Walk in Low Comprehension Group - Dataset 1')
+
+ax2 = ax1.twinx()
+ax2.set_ylabel("Bridge")
+ax2.set_ylim(-17, 17)
+
+ax3 = ax1.twiny()
+ax3.set_xlabel("Two or More Strategies")
+ax3.set_xlim(-17, 17)
+
+#ax1.xaxis.tick_top()
+#ax1.xaxis.set_label_position('top')
+
+plt.show()
