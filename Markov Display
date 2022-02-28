@@ -1,0 +1,507 @@
+import matplotlib as mpl
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.collections import PatchCollection
+import math
+    
+class MarkovChain:
+# initial parameters
+    def __init__(self, labels, amounts, sizes, weights_matrix):
+        self.l = labels
+        self.a = amounts
+        self.s = sizes
+        self.w = weights_matrix
+        self.c = [[-4, 10], [-10, 0], [-4, -10], [10, 0], [4, -10], [4, 10]] #coordinates of the nodes
+        self.text_args = {
+            'ha': 'center', 
+            'va': 'center', 
+            'fontsize': 12 #fontsize of the probability labels
+        }
+        self.ctext_args = {
+            'ha': 'center',
+            'va': 'center',
+            'fontsize': 12, #fontsize of the node labels
+        }
+        self.circle_color='thistle'
+        
+        
+    def draw(self, img_path=None):
+            fig, ax = plt.subplots(figsize=[10,10])
+            plt.xlim(-20, 20) #x-axis
+            plt.ylim(-20, 20) #y-axis
+            wide_arrows = []
+            weights_labels = []
+            label_coor = []
+            weird_arrows = []
+            
+            ## No Switch Arrows ##
+            #####
+            ring_n = mpatches.Wedge((self.c[0][0], self.c[0][1]+self.s[0]+.3), 1, -40, 160, width = self.w[0][0]*3)
+            arrow_n = mpatches.FancyArrow(-4.5, 12, 0, -.001, head_width = self.w[0][0]*3+.6,
+                                           length_includes_head = False, head_length = 1)
+            if self.w[0][0] >= .2:
+                wide_arrows.append(ring_n)
+                weird_arrows.append(arrow_n)
+                weights_labels.append(str(self.w[0][0])[1:])
+                label_coor.append([-4, 12])
+            
+            #####
+            ring_p = mpatches.Wedge((self.c[1][0]-self.s[1]-.3, self.c[1][1]), 2, 45, 255, width = self.w[1][1]*3)
+            arrow_p = mpatches.FancyArrow(-14.7, -1.2, 0.01, -.003, head_width = self.w[1][1]*3+.6,
+                                            length_includes_head = False, head_length = 1)
+            if self.w[1][1] >= .2:
+                wide_arrows.append(ring_p)
+                weird_arrows.append(arrow_p)
+                weights_labels.append(str(self.w[1][1])[1:])
+                label_coor.append([-15.5, 0])
+                
+            #####    
+            ring_b = mpatches.Wedge((self.c[2][0], self.c[2][1]-self.s[2]-.3), 1, -220, -27, width = self.w[2][2]*3)
+            arrow_b = mpatches.FancyArrow(self.c[2][0]+math.sin(math.radians(45))*self.s[2]-.2, 
+                                          self.c[2][1]-math.sin(math.radians(45))*self.s[2]-1.2,
+                                          0.003, .01, 
+                                          head_width = self.w[2][2]*3+.6,
+                                           length_includes_head = False, head_length = 1)
+            if self.w[2][2] >= .2:
+                wide_arrows.append(ring_b)
+                weird_arrows.append(arrow_b)
+                weights_labels.append(str(self.w[2][2])[1:])
+                label_coor.append([-4, -12.7])
+            
+            #####
+            ring_pb = mpatches.Wedge((self.c[3][0]+self.s[3]+.3, 0), 3, -120, 80, width = self.w[3][3]*3)
+            arrow_pb = mpatches.FancyArrow(self.c[3][0]+math.sin(math.radians(45))*self.s[3]+2.6,
+                                           self.c[3][1]+math.sin(math.radians(45))*self.s[3]-2.5, -0.01, 0.002, 
+                                           head_width = self.w[3][3]*3+.6,
+                                           length_includes_head = False, head_length = 1)
+            if self.w[3][3] >= .2:
+                wide_arrows.append(ring_pb)
+                weird_arrows.append(arrow_pb)
+                weights_labels.append(str(self.w[3][3])[1:])
+                label_coor.append([self.c[3][0]+self.s[3]+2.5*3/4, 0])
+                
+            #####    
+            ring_pe = mpatches.Wedge((self.c[4][0], self.c[4][1]-self.s[4]-.5), .7, -220, -27, width = self.w[4][4]*3)
+            arrow_pe = mpatches.FancyArrow(self.c[4][0]+math.sin(math.radians(45))*self.s[4]-.3, 
+                                          self.c[4][1]-math.sin(math.radians(45))*self.s[4]-1.2,
+                                          0.005, .01, 
+                                          head_width = self.w[4][4]*3+.6,
+                                           length_includes_head = False, head_length = 1)
+            if self.w[4][4] >= .2:
+                wide_arrows.append(ring_pe)
+                weird_arrows.append(arrow_pe)
+                weights_labels.append(str(self.w[4][4])[1:])
+                label_coor.append([4, -11.6 - 1.5*3/4])
+            
+            #####
+            ring_a = mpatches.Wedge((self.c[5][0], self.c[5][1]+self.s[5]+.2), 1.3, -40, 170,
+                                    width = self.w[5][5]*3)
+            arrow_a = mpatches.FancyArrow(self.c[5][0]-self.s[5]+.8, 
+                                          self.c[5][1]+self.s[5]+.5, 0, -.001, 
+                                          head_width = self.w[5][5]*3+.6,
+                                            length_includes_head = False, head_length = 1)
+            if self.w[5][5] >= .2:
+                wide_arrows.append(ring_a)
+                weird_arrows.append(arrow_a)
+                weights_labels.append(str(self.w[5][5])[1:])
+                label_coor.append([4, 13.2])
+
+            j = PatchCollection([ring_n, arrow_n, ring_p, arrow_p, ring_b, arrow_b,
+                                 ring_pb, arrow_pb, ring_pe, arrow_pe, ring_a, arrow_a],
+                                facecolor = 'silver')
+            ax.add_collection(j)           
+            
+            
+            
+            ## Switch Arrows ##
+########## NONE ##########
+#####
+            #x starting coordinate, y starting coordinate, x distance, y distance, width of arrow, width of arrow head
+            n_to_p = mpatches.FancyArrow(self.c[0][0], self.c[0][1]-self.s[0]/2,
+                                         -self.c[0][0]+self.c[1][0]+math.sin(math.radians(30))*self.s[1],
+                                         -self.c[0][1]+math.sin(math.radians(60))*self.s[1]+self.s[0]/2,
+                                         width = self.w[0][1]*3, head_width = self.w[0][1]*3+.6,
+                                         length_includes_head=True)
+            #make the arrow darker and labeled by probability if the probability of switching is greater than or equal to .20            
+            if self.w[0][1] >= .2:
+                wide_arrows.append(n_to_p)
+                weights_labels.append('.50')
+                label_coor.append([self.c[0][0] + (-self.c[0][0]+self.c[1][0]+
+                                                   math.sin(math.radians(30))*self.s[1])/2,
+                                  self.c[0][1]-self.s[0]/2 + (-self.c[0][1]+
+                                                              math.sin(math.radians(60))*self.s[1]+self.s[0]/2)/2])
+#####
+#comment out the switch if its probability is 0 (or add an if clause to check if the probability is zero and not run n_to_b if it is)
+#            n_to_b = mpatches.FancyArrow(self.c[0][0], self.c[0][1], 
+#                                         0,
+#                                         -self.c[0][1]+self.c[2][1]+self.s[2], 
+#                                         width = self.w[0][2]*3, head_width = self.w[0][2]*3+.6,
+#                                         length_includes_head=True)
+#            if self.w[0][2] >= .2:
+#                wide_arrows.append(n_to_b)
+#                weights_labels.append(str(self.w[0][2])[1:])
+#                label_coor.append([-3.5 + 3.2/2, 9.4 - 16.2/2])
+#####
+            n_to_pb = mpatches.FancyArrow(self.c[0][0], self.c[0][1],
+                                          abs(self.c[0][0])+abs(self.c[3][0])-math.sin(math.radians(45))*self.s[3],
+                                          -abs(self.c[0][1])+math.sin(math.radians(45))*self.s[3],
+                                          width = self.w[0][3]*3, head_width = self.w[0][3]*3+.6,
+                                         length_includes_head=True)
+            if self.w[0][3] >= .2:
+                wide_arrows.append(n_to_pb)
+                weights_labels.append(str(self.w[0][3])[1:])
+                label_coor.append([self.c[0][0] + (abs(self.c[0][0])+abs(self.c[3][0])-math.sin(math.radians(45))*self.s[3])/2,
+                                  self.c[0][1] + (-abs(self.c[0][1])+math.sin(math.radians(45))*self.s[3])/2])
+                
+#####
+#            n_to_pe = mpatches.FancyArrow(self.c[0][0], self.c[0][1], 
+#                                         -self.c[0][0]+self.c[4][0]-math.sin(math.radians(20))*self.s[4],
+#                                         -self.c[0][1]+self.c[4][1]+math.sin(math.radians(70))*self.s[4], 
+#                                         width = self.w[0][4]*3, head_width = self.w[0][4]*3+.6,
+#                                         length_includes_head=True)
+#            if self.w[0][4] >= .2:
+#                wide_arrows.append(n_to_b)
+#                weights_labels.append(str(self.w[0][4])[1:])
+#                label_coor.append([3.5 - 3.2/2, 9.4 - 16.2/2])
+
+########## PARAPHRASE ##########
+#####                
+            p_to_n = mpatches.FancyArrow(self.c[1][0]-self.s[1]/2, self.c[1][1]+self.s[1]/4, 
+                                         abs(self.c[1][0])-abs(self.c[0][0])-self.s[0]+self.s[1]/2, 
+                                         abs(self.c[0][1])-self.s[1]/4, 
+                                         width = self.w[1][0]*3, head_width = self.w[1][0]*3+.6,
+                                         length_includes_head=True)
+            if self.w[1][0] >= .2:
+                wide_arrows.append(p_to_n)
+                weights_labels.append(str(self.w[1][0])[1:])
+                label_coor.append([-11 +4.8/2, 3 + 5.5/2])
+#####
+            p_to_b = mpatches.FancyArrow(self.c[1][0]-self.s[1], self.c[1][1], 
+                                         abs(self.c[1][0]) + self.c[2][0] - self.s[2] + self.s[1], 
+                                         -abs(self.c[2][1]),
+                                         width = self.w[1][2]*3, head_width = self.w[1][2]*3+.6,
+                                         length_includes_head=True)
+            if self.w[1][2] >= .2:
+                wide_arrows.append(p_to_b)
+                weights_labels.append(str(self.w[1][2])[1:])
+                label_coor.append([-10+8/2, -2.5-6/2])
+#####
+            p_to_pb = mpatches.FancyArrow(self.c[1][0], self.c[1][1]+self.s[1]/4, 
+                                          -self.c[1][0]+self.c[3][0]-self.s[3], 
+                                          0, 
+                                        width = self.w[1][3]*3, head_width = self.w[1][3]*3+.6,
+                                         length_includes_head=True)
+            if self.w[1][3] >= .2:
+                wide_arrows.append(p_to_pb)
+                weights_labels.append(str(self.w[1][3])[1:])
+                label_coor.append([self.c[1][0] + (-self.c[1][0]+self.c[3][0]-self.s[3])/2,
+                                  self.c[1][1]+self.s[1]/4])
+                
+#####
+#            p_to_pe = mpatches.FancyArrow(self.c[1][0], self.c[1][1], 
+#                                         abs(self.c[1][0]) + self.c[4][0] - math.sin(math.radians(35))*self.s[4], 
+#                                         -abs(self.c[4][1])+math.sin(math.radians(55))*self.s[4],
+#                                         width = self.w[1][4]*3, head_width = self.w[1][4]*3+.6,
+#                                         length_includes_head=True)
+#            if self.w[1][4] >= .2:
+#                wide_arrows.append(p_to_pe)
+#                weights_labels.append(str(self.w[1][4])[1:])
+#                label_coor.append([-10+8/2, -2.5-6/2])
+                
+#####
+#            p_to_a = mpatches.FancyArrow(self.c[1][0], self.c[1][1], 
+#                                         abs(self.c[1][0]) + self.c[5][0] - math.sin(math.radians(35))*self.s[5], 
+#                                         self.c[5][1]-math.sin(math.radians(55))*self.s[5],
+#                                         width = self.w[1][5]*3, head_width = self.w[1][5]*3+.6,
+#                                         length_includes_head=True)
+#            if self.w[1][5] >= .2:
+#                wide_arrows.append(p_to_a)
+#                weights_labels.append(str(self.w[1][5])[1:])
+#                label_coor.append([self.c[1][0]+(abs(self.c[1][0]) + self.c[5][0] - math.sin(math.radians(35))*self.s[5])/2,
+#                                   self.c[1][1]+(self.c[5][1]-math.sin(math.radians(55))*self.s[5])/2])
+
+########## BRIDGE ##########
+#####            
+#            b_to_n = mpatches.FancyArrow(self.c[2][0]+self.s[2]/2, self.c[2][1], 
+#                                         0,
+#                                         self.c[0][1]-self.c[2][1]-self.s[0],
+#                                         width = self.w[2][0]*3, head_width = self.w[2][0]*3+.6,
+#                                         length_includes_head=True)
+#            if self.w[2][0] >= .2:
+#                wide_arrows.append(b_to_n)
+#                weights_labels.append(str(self.w[2][0])[1:])
+#                label_coor.append([self.c[2][0]-.3+(self.c[0][0]-self.c[2][0]-self.s[2]-self.s[0]+.3)/2,
+#                                  self.c[2][1]+(self.c[0][1]-self.c[2][1]-self.s[2]-self.s[0])/2])
+#####
+            b_to_p = mpatches.FancyArrow(self.c[2][0], self.c[2][1], 
+                                         self.c[1][0]-self.c[2][0]+math.sin(math.radians(30))*self.s[1], 
+                                         -self.c[2][1]-math.sin(math.radians(60))*self.s[1],
+                                         width = self.w[2][1]*3, head_width = self.w[2][1]*3+.6,
+                                         length_includes_head=True)
+            if self.w[2][1] >= .2:
+                wide_arrows.append(b_to_p)
+                weights_labels.append(str(self.w[2][1])[1:])
+                label_coor.append([self.c[2][0] + (self.c[1][0]-self.c[2][0]+math.sin(math.radians(30))*self.s[1])/2,
+                                  self.c[2][1] + (-self.c[2][1]-math.sin(math.radians(60))*self.s[1])/2])
+#####
+            b_to_pb = mpatches.FancyArrow(self.c[2][0], self.c[2][1]-.4,
+                                          self.c[3][0]-self.c[2][0]-math.sin(math.radians(60))*self.s[3],
+                                          -self.c[2][1]-math.sin(math.radians(30))*self.s[3],
+                                          width = self.w[2][3]*3, head_width = self.w[2][3]*3+.6,
+                                         length_includes_head=True)
+            if self.w[2][3] >= .2:
+                wide_arrows.append(b_to_pb)
+                weights_labels.append(str(self.w[2][3])[1:])
+                label_coor.append([self.c[2][0] + (self.c[3][0]-self.c[2][0]-math.sin(math.radians(60))*self.s[3])/2,
+                                  self.c[2][1] + (-self.c[2][1]-math.sin(math.radians(30))*self.s[3])/2])
+                
+#####
+#            b_to_pe = mpatches.FancyArrow(self.c[2][0], self.c[2][1]-self.s[2]/2,
+#                                          self.c[4][0]-self.c[2][0]-self.s[4],
+#                                          0,
+#                                          width = self.w[2][4]*3, head_width = self.w[2][4]*3+.6,
+#                                         length_includes_head=True)
+#            if self.w[2][4] >= .2:
+#                wide_arrows.append(b_to_pb)
+#                weights_labels.append(str(self.w[2][3])[1:])
+#                label_coor.append([self.c[2][0] + (self.c[3][0]-math.sin(math.radians(60))*self.s[3])/2,
+#                                  self.c[2][1] + (-self.c[2][1]-math.sin(math.radians(30))*self.s[3])/2])
+                
+#####
+            b_to_a = mpatches.FancyArrow(self.c[2][0]-.3, self.c[2][1], 
+                                         self.c[5][0]-self.c[2][0]-math.sin(math.radians(70))*self.s[5]+.3,
+                                         self.c[5][1]-self.c[2][1]-math.sin(math.radians(20))*self.s[5], 
+                                         width = self.w[2][5]*3, head_width = self.w[2][5]*3+.6,
+                                         length_includes_head=True)
+            if self.w[2][5] >= .2:
+                wide_arrows.append(b_to_a)
+                weights_labels.append(str(self.w[2][5])[1:])
+                label_coor.append([0 + 3.8/2, -9 + 15.8/2])
+                
+########## PARAPHRASE-BRIDGE ##########
+            pb_to_n = mpatches.FancyArrow(self.c[3][0], self.c[3][1], 
+                                          -self.c[3][0]+self.c[0][0]+math.sin(math.radians(30))*self.s[0],
+                                          self.c[0][1]-math.sin(math.radians(60))*self.s[0],
+                                          width = self.w[3][0]*3, head_width = self.w[3][0]*3+.6,
+                                         length_includes_head=True)
+            if self.w[3][0] >= .2:
+                wide_arrows.append(pb_to_n)
+                weights_labels.append(str(self.w[3][0])[1:])
+                label_coor.append([10 - .4/2, -12.1 + 7.9/2])
+
+#####
+            pb_to_p = mpatches.FancyArrow(self.c[3][0], self.c[3][1]-self.s[1]/4, 
+                                          -self.c[3][0]+self.c[1][0]+self.s[1], 
+                                          0, 
+                                          width = self.w[3][1]*3, head_width = self.w[3][1]*3+.6,
+                                         length_includes_head=True)
+            if self.w[3][1] >= .2:
+                wide_arrows.append(pb_to_p)
+                weights_labels.append(str(self.w[3][1])[1:])
+                label_coor.append([self.c[3][0] + (-self.c[3][0]+self.c[1][0]+self.s[1])/2,
+                                  self.c[3][1]-self.s[1]/4])
+#####
+            pb_to_b = mpatches.FancyArrow(self.c[3][0], self.c[3][1]-.5, 
+                                          -self.c[3][0]+self.c[2][0]+self.s[2]+1, 
+                                          self.c[2][1],
+                                          width = self.w[3][2]*3, head_width = self.w[3][2]*3+.6,
+                                         length_includes_head=True)
+            if self.w[3][2] >= .2:
+                wide_arrows.append(pb_to_b)
+                weights_labels.append(str(self.w[3][2])[1:])
+                label_coor.append([12 - 10/2, -3 - 6/2])
+                
+#####
+            pb_to_pe = mpatches.FancyArrow(self.c[3][0]+.5, self.c[3][1], 
+                                          -self.c[3][0]+self.c[4][0]+self.s[4], 
+                                          self.c[4][1],
+                                          width = self.w[3][4]*3, head_width = self.w[3][4]*3+.6,
+                                         length_includes_head=True)
+            if self.w[3][4] >= .2:
+                wide_arrows.append(pb_to_b)
+                weights_labels.append(str(self.w[3][4])[1:])
+                label_coor.append([12 - 10/2, -3 - 6/2])
+                
+#####
+            pb_to_a = mpatches.FancyArrow(self.c[3][0], self.c[3][1], 
+                                          -(self.c[3][0]-self.c[5][0])+math.sin(math.radians(10))*self.s[5], 
+                                          self.c[5][1]-math.sin(math.radians(80))*self.s[5], 
+                                          width = self.w[3][5]*3, head_width = self.w[3][5]*3+.6,
+                                         length_includes_head=True)
+            if self.w[3][5] >= .2:
+                wide_arrows.append(pb_to_a)
+                weights_labels.append(str(self.w[3][5])[1:])
+                label_coor.append([10 - 4.1/2, 3 + 5.2/2])
+
+########## PARAPHRASE-ELABORATION ##########
+#####
+#            pe_to_p = mpatches.FancyArrow(self.c[4][0], self.c[4][1]-self.s[4]/2, 
+#                                          -self.c[4][0]+self.c[1][0]+math.sin(math.radians(45))*self.s[1], 
+#                                          -self.c[4][1]-math.sin(math.radians(45))*self.s[1]+self.s[4]/2, 
+#                                          width = self.w[4][1]*3, head_width = self.w[4][1]*3+.6,
+#                                         length_includes_head=True)
+#            if self.w[4][1] >= .2:
+#                wide_arrows.append(pe_to_p)
+#                weights_labels.append(str(self.w[4][1])[1:])
+#                label_coor.append([self.c[4][0] + (-self.c[4][0]+self.c[1][0]+math.sin(math.radians(45))*self.s[1])/2-.7,
+#                                  self.c[4][1]+(-self.c[4][1]-math.sin(math.radians(45))*self.s[1]+self.s[4]/2)/2])
+#####
+            pe_to_b = mpatches.FancyArrow(self.c[4][0], self.c[4][1]-.8, 
+                                          -self.c[4][0]+self.c[2][0]+self.s[2], 
+                                          0,
+                                          width = self.w[4][2]*3, head_width = self.w[4][2]*3+.6,
+                                         length_includes_head=True)
+            if self.w[4][2] >= .2:
+                wide_arrows.append(pe_to_b)
+                weights_labels.append('.30')
+                label_coor.append([self.c[4][0]+(-self.c[4][0]+self.c[2][0]+self.s[2])/2,
+                                   self.c[4][1]-.8])
+
+#####
+            pe_to_pb = mpatches.FancyArrow(self.c[4][0], self.c[4][1], 
+                                          -self.c[4][0]+self.c[3][0]-math.sin(math.radians(40))*self.s[3], 
+                                          -self.c[4][1]-math.sin(math.radians(50))*self.s[3],
+                                          width = self.w[4][3]*3, head_width = self.w[4][3]*3+.6,
+                                         length_includes_head=True)
+            if self.w[4][3] >= .2:
+                wide_arrows.append(pe_to_pb)
+                weights_labels.append('.60')
+                label_coor.append([self.c[4][0]+(-self.c[4][0]+self.c[3][0]-math.sin(math.radians(35))*self.s[3])/2-.2,
+                                   self.c[4][1]+(-self.c[4][1]-math.sin(math.radians(55))*self.s[3])/2])
+#####
+#            pe_to_a = mpatches.FancyArrow(self.c[4][0], self.c[4][1], 
+#                                          0, 
+#                                          self.c[5][1]-self.c[4][1]-self.s[5], 
+#                                          width = self.w[4][5]*3, head_width = self.w[4][5]*3+.6,
+#                                         length_includes_head=True)
+#            if self.w[4][5] >= .2:
+#                wide_arrows.append(pe_to_a)
+#                weights_labels.append(str(self.w[4][5])[1:])
+#                label_coor.append([self.c[4][0], self.c[4][1]+(self.c[5][1]-self.c[4][1]-self.s[5])/2+3])
+                
+########## ALL ##########
+            a_to_n = mpatches.FancyArrow(self.c[5][0], self.c[5][1]+self.s[5]/2, 
+                                         self.c[0][0]-self.c[5][0]+self.s[0],
+                                         0,
+                                         width = self.w[5][0]*3, head_width = self.w[5][0]*3+.6,
+                                         length_includes_head=True)
+            if self.w[5][0] >= .2:
+                wide_arrows.append(a_to_n)
+                weights_labels.append(str(self.w[5][0])[1:])
+                label_coor.append([self.c[5][0] + (self.c[0][0]-self.c[5][0]-self.s[5]-self.s[0])/2,
+                                   self.c[5][1]-.3+(self.c[0][1]-self.c[5][1]-self.s[5]-self.s[0]-.3)/2])
+#####
+            a_to_p = mpatches.FancyArrow(self.c[5][0], self.c[5][1]+self.s[5]/2,
+                                         -self.c[5][0]+self.c[1][0]+math.sin(math.radians(45))*self.s[1],
+                                          -self.c[5][1]+math.sin(math.radians(45))*self.s[1]-self.s[5]/2,
+                                         width = self.w[5][1]*3, head_width = self.w[5][1]*3+.6,
+                                         length_includes_head=True, 
+                                         head_length = 1+self.w[5][1]*3/2+.6)
+            if self.w[5][1] >= .2:
+                wide_arrows.append(a_to_p)
+                weights_labels.append(str(self.w[5][1])[1:])
+                label_coor.append([self.c[5][0]+(-self.c[5][0]+self.c[1][0]+math.sin(math.radians(45))*self.s[1])/2,
+                                   self.c[5][1]+self.s[5]/2+(-self.c[5][1]+math.sin(math.radians(45))*self.s[1]-self.s[5]/2)/2])
+                
+
+#####                
+            a_to_b = mpatches.FancyArrow(self.c[5][0]-self.s[5]/2, self.c[5][1], 
+                                        -self.s[5]/2-self.c[5][0]+self.c[2][0]+self.s[5]/2+1.5,
+                                         self.c[2][1]-self.c[5][1]+self.s[2],
+                                         width = self.w[5][2]*3, head_width = self.w[5][2]*3+.6,
+                                         length_includes_head=True, 
+                                         head_length = 1+self.w[5][0]*3/2+.6)
+            if self.w[5][2] >= .2:
+                wide_arrows.append(a_to_b)
+                weights_labels.append(str(self.w[5][2])[1:])
+                label_coor.append([self.c[5][0] + (self.c[2][0]-self.c[5][0]-self.s[5]-self.s[2])/2,
+                                   self.c[5][1]-.3+(self.c[2][1]-self.c[5][1]-self.s[5]-self.s[2]-.3)/2])
+#####            
+            a_to_pb = mpatches.FancyArrow(self.c[5][0]-self.s[5]/2, self.c[5][1]+self.s[5]/2,
+                                          -self.c[5][0]+self.c[3][0]+self.s[5]/2,
+                                          -self.c[5][1]+self.s[3]-self.s[5]/2, 
+                                         width = self.w[5][3]*3, head_width = self.w[5][3]*3+.6,
+                                         length_includes_head=True, 
+                                         head_length = 1)
+            if self.w[5][3] >= .2:
+                wide_arrows.append(a_to_pb)
+                weights_labels.append(str(self.w[5][3])[1:])
+                label_coor.append([self.c[5][0] + (-self.c[5][0]+self.c[3][0]-1)/2,
+                                  self.c[5][1]+self.s[5]/2 + (-self.c[5][1]+self.s[3]-self.s[5]/2+1)/2-.3])
+                
+#####            
+            a_to_pe = mpatches.FancyArrow(self.c[5][0]-self.s[5]/2, self.c[5][1],
+                                          0,
+                                          -self.c[5][1]+self.c[4][1]+self.s[4], 
+                                         width = self.w[5][4]*3, head_width = self.w[5][4]*3+.6,
+                                         length_includes_head=True, 
+                                         head_length = 1)
+            if self.w[5][4] >= .2:
+                wide_arrows.append(a_to_pb)
+                weights_labels.append(str(self.w[5][4])[1:])
+                label_coor.append([self.c[5][0] + (-self.c[5][0]+self.c[5][0]-math.sin(math.radians(30))*self.s[4])/2,
+                                  self.c[5][1]-self.s[5]/2 + (-self.c[5][1]+math.sin(math.radians(60))*self.s[4]+self.s[5]/2)/2])
+            
+            # display the arrows    
+            a = PatchCollection([n_to_p, n_to_pb,
+                                 p_to_n, p_to_b, p_to_pb,
+                                 b_to_a, b_to_p, b_to_pb,
+                                 pb_to_n, pb_to_p, pb_to_b, pb_to_pe, pb_to_a,
+                                 pe_to_b, pe_to_pb,
+                                 a_to_n, a_to_p, a_to_b, a_to_pb, a_to_pe],
+                                facecolor='lightgray')
+            ax.add_collection(a)
+            
+            #display the arrows with probability > .2
+            q = PatchCollection(wide_arrows, facecolor ='darkgray')
+            ax.add_collection(q)
+            
+            #display the no switch arrow heads with probability > .2
+            g = PatchCollection(weird_arrows, facecolor = 'darkgray')
+            ax.add_collection(g)
+            
+            #annotate the arrows with probability > .2
+            for arrow in wide_arrows:
+                h = wide_arrows.index(arrow)
+                ax.annotate(weights_labels[h], label_coor[h], color='k', **self.text_args)
+            
+            
+            ### Create the nodes
+            node_label_coor = [[-4, 9], [-10, -1.2],  
+                               [-4, -10.8], [10, -1.2], [4, -14.4], [4, 9]]
+            num_switches = [str(x) for x in amounts]
+            
+            for num in self.c:
+                i = self.c.index(num)
+                circle = mpatches.Circle(num, radius=sizes[i])
+                p = PatchCollection(
+                            [circle], color=self.circle_color)
+                ax.add_collection(p)
+                ax.annotate(labels[i], num, color = 'k', **self.ctext_args)
+                ax.annotate(num_switches[i], node_label_coor[i], color = 'k', 
+                            **self.ctext_args)
+            plt.show()
+        
+        
+        
+# Node labels
+labels = ['None', 'Para', 'B', 'Para-Bridge', 'P-E', 'All']
+
+#total frequency for each strategy
+amounts = [30, 275, 23, 732, 11, 63]
+
+#size of nodes, based on amounts
+sizes = [math.sqrt(x/6/math.pi) for x in amounts]
+
+#probability of switching from one strategy to another - i.e. first three are probability of switching from None to Para, None to Bridge, and None to Para-bridge
+weights_matrix = np.array([[.21, .50, 0, .29, 0, 0], 
+                           [.05, .46, .01, .47, 0, 0], 
+                           [0, .14, .14, .62, 0, .05], 
+                           [.01, .18, .01, .74, .01, .04], 
+                           [0, 0, .30, .60, .10, 0], 
+                           [.02, .03, .05, .73, .02, .15]])
+ 
+#create and run the Markov display
+mc = MarkovChain(labels, amounts, sizes, weights_matrix)
+mc.draw()
