@@ -104,7 +104,4 @@ ax3 = ax1.twiny()
 ax3.set_xlabel("Two or More Strategies")
 ax3.set_xlim(-17, 17)
 
-#ax1.xaxis.tick_top()
-#ax1.xaxis.set_label_position('top')
-
 plt.show()
