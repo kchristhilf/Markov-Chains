@@ -1,0 +1,59 @@
+### Part one: frequency of switches
+
+import os
+# set directory to folder with data: IDs should be in the second column, strategy used in the second column
+os.chdir('C:\\Users\\kcfai\\Documents\\2022\\ASU 1 Complete')
+
+import csv
+
+# assumes 8 different strategy types
+switch_count = [[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]]
+
+with open('ASU 1 Low Comp Outcome.csv', 'r') as csvinput:
+    next(csvinput)
+    prev_id = 'participant_id'
+    prev_strategy = 11
+    ids = 0
+    for row in csv.reader(csvinput):
+        user_id = row[0]
+        strategy = int(row[1])
+        if user_id == prev_id:
+            switch_count[prev_strategy][strategy] += 1
+        prev_id = user_id
+        prev_strategy = strategy
+        
+print(switch_count)
+
+### Part two: total frequencies of each strategy
+
+with open('ASU 1 Low Comp Outcome.csv', 'r') as csvinput:
+    next(csvinput)
+    none = 0
+    para = 0
+    bridge = 0
+    elab = 0
+    parabridge = 0
+    paraelab = 0
+    bridgeelab = 0
+    all_used = 0
+    for row in csv.reader(csvinput):
+        strats = row[1]
+        if strats == '0':
+            none += 1
+        elif strats == '1':
+            para += 1
+        elif strats == '2':
+            bridge += 1
+        elif strats == '3':
+            elab += 1
+        elif strats == '4':
+            parabridge += 1
+        elif strats == '5':
+            paraelab += 1
+        elif strats == '6':
+            bridgeelab += 1
+        elif strats == '7':
+            all_used += 1
+print([none, para, bridge, elab, parabridge, paraelab, bridgeelab, all_used])
