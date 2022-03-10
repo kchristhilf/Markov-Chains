@@ -11,7 +11,7 @@ switch_count = [[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]]
 
-with open('ASU 1 Low Comp Outcome.csv', 'r') as csvinput:
+with open('.csv', 'r') as csvinput:
     next(csvinput)
     prev_id = 'participant_id'
     prev_strategy = 11
@@ -28,7 +28,7 @@ print(switch_count)
 
 ### Part two: total frequencies of each strategy
 
-with open('ASU 1 Low Comp Outcome.csv', 'r') as csvinput:
+with open('e.csv', 'r') as csvinput:
     next(csvinput)
     none = 0
     para = 0
