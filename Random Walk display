@@ -1,8 +1,5 @@
 #Random Walk
 
-import os
-os.chdir('C:\\Users\\kcfai\\Documents\\2022\\ASU 1 Complete')
-
 import csv
 import matplotlib as mpl
 import matplotlib.patches as mpatches
