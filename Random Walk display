@@ -9,7 +9,7 @@ from matplotlib.collections import PatchCollection
 import math
 fig, ax1 = plt.subplots()
 
-with open('ASU 1 Low Pre-Text Comprehension.csv', 'r') as csvinput:
+with open('.csv', 'r') as csvinput:
     next(csvinput)
     prev_xcoor = 0
     prev_ycoor = 0
