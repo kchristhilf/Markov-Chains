@@ -2,7 +2,7 @@
 
 import os
 # set directory to folder with data: IDs should be in the second column, strategy used in the second column
-os.chdir('C:\\Users\\kcfai\\Documents\\2022\\ASU 1 Complete')
+os.chdir('insert file here')
 
 import csv
 
