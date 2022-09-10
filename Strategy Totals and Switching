@@ -11,8 +11,8 @@ switch_count = [[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]]
 
-with open('.csv', 'r') as csvinput:
-    next(csvinput)
+with open('file.csv', 'r') as csvinput:
+    next(csvinput) #skip column labels
     prev_id = 'participant_id'
     prev_strategy = 11
     ids = 0
@@ -26,7 +26,19 @@ with open('.csv', 'r') as csvinput:
         
 print(switch_count)
 
-### Part two: total frequencies of each strategy
+### Part two: Converting frequencies to probabilities for Markov chain nodes
+percentages= []
+for group in switch_count:
+    for item in group:
+        if sum(group) > 0:
+            item = round(item/sum(group), 2)
+        else:
+            item = 0
+        percentages.append(item)
+print(percentages)
+
+
+### Part three: total frequencies of each strategy
 
 with open('e.csv', 'r') as csvinput:
     next(csvinput)
